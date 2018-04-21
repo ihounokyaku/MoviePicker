@@ -65,6 +65,5 @@ class MainViewController: NSViewController, FolderDropViewDelegate {
         }
         return subfolders
     }
-
 }
 
