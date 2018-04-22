@@ -7,13 +7,18 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		C4178A42208B8B80003FB5C8 /* DropView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4178A41208B8B80003FB5C8 /* DropView.swift */; };
+		C492AA24208C7C8D0064AAF5 /* CollectionItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = C492AA22208C7C8D0064AAF5 /* CollectionItem.swift */; };
+		C492AA25208C7C8D0064AAF5 /* CollectionItem.xib in Resources */ = {isa = PBXBuildFile; fileRef = C492AA23208C7C8D0064AAF5 /* CollectionItem.xib */; };
 		C4D6BFAA208B55C100C11035 /* Movie.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4D6BFA9208B55C100C11035 /* Movie.swift */; };
+		C4D6BFAC208B5AB900C11035 /* File.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4D6BFAB208B5AB900C11035 /* File.swift */; };
+		C4D6BFAF208B5D4A00C11035 /* DataManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4D6BFAE208B5D4A00C11035 /* DataManager.swift */; };
+		C4D6BFB1208B68D100C11035 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4D6BFB0208B68D100C11035 /* Extensions.swift */; };
 		C4DEEB90208B4384006A1FAB /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4DEEB8F208B4384006A1FAB /* AppDelegate.swift */; };
 		C4DEEB92208B4384006A1FAB /* MainViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4DEEB91208B4384006A1FAB /* MainViewController.swift */; };
 		C4DEEB94208B4384006A1FAB /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = C4DEEB93208B4384006A1FAB /* Assets.xcassets */; };
 		C4DEEB97208B4384006A1FAB /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = C4DEEB95208B4384006A1FAB /* Main.storyboard */; };
 		C4DEEBA1208B43E0006A1FAB /* FolderDropView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4DEEB9F208B43E0006A1FAB /* FolderDropView.swift */; };
-		C4DEEBA2208B43E0006A1FAB /* DropView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4DEEBA0208B43E0006A1FAB /* DropView.swift */; };
 		FA4CA1551A19BC33196DE46A /* Pods_MoviePicker.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = C3E884548622516804E1970D /* Pods_MoviePicker.framework */; };
 /* End PBXBuildFile section */
 
@@ -21,7 +26,13 @@
 		5B7A34A037A0751BFCFC5BF1 /* Pods-MoviePicker.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MoviePicker.release.xcconfig"; path = "Pods/Target Support Files/Pods-MoviePicker/Pods-MoviePicker.release.xcconfig"; sourceTree = "<group>"; };
 		9675E6705D1065D3213B96E3 /* Pods-MoviePicker.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MoviePicker.debug.xcconfig"; path = "Pods/Target Support Files/Pods-MoviePicker/Pods-MoviePicker.debug.xcconfig"; sourceTree = "<group>"; };
 		C3E884548622516804E1970D /* Pods_MoviePicker.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MoviePicker.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		C4178A41208B8B80003FB5C8 /* DropView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DropView.swift; sourceTree = "<group>"; };
+		C492AA22208C7C8D0064AAF5 /* CollectionItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionItem.swift; sourceTree = "<group>"; };
+		C492AA23208C7C8D0064AAF5 /* CollectionItem.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CollectionItem.xib; sourceTree = "<group>"; };
 		C4D6BFA9208B55C100C11035 /* Movie.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Movie.swift; sourceTree = "<group>"; };
+		C4D6BFAB208B5AB900C11035 /* File.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = File.swift; sourceTree = "<group>"; };
+		C4D6BFAE208B5D4A00C11035 /* DataManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DataManager.swift; sourceTree = "<group>"; };
+		C4D6BFB0208B68D100C11035 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		C4DEEB8C208B4384006A1FAB /* MoviePicker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = MoviePicker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		C4DEEB8F208B4384006A1FAB /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		C4DEEB91208B4384006A1FAB /* MainViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MainViewController.swift; sourceTree = "<group>"; };
@@ -30,7 +41,6 @@
 		C4DEEB98208B4384006A1FAB /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		C4DEEB99208B4384006A1FAB /* MoviePicker.entitlements */ = {isa = PBXFileReference; lastKnownFileType = text.plist.entitlements; path = MoviePicker.entitlements; sourceTree = "<group>"; };
 		C4DEEB9F208B43E0006A1FAB /* FolderDropView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = FolderDropView.swift; sourceTree = "<group>"; };
-		C4DEEBA0208B43E0006A1FAB /* DropView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DropView.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -66,8 +76,18 @@
 			isa = PBXGroup;
 			children = (
 				C4D6BFA9208B55C100C11035 /* Movie.swift */,
+				C4D6BFAB208B5AB900C11035 /* File.swift */,
+				C4D6BFAE208B5D4A00C11035 /* DataManager.swift */,
 			);
 			path = DataModel;
+			sourceTree = "<group>";
+		};
+		C4D6BFAD208B5BF000C11035 /* Controllers */ = {
+			isa = PBXGroup;
+			children = (
+				C4DEEB91208B4384006A1FAB /* MainViewController.swift */,
+			);
+			path = Controllers;
 			sourceTree = "<group>";
 		};
 		C4DEEB83208B4384006A1FAB = {
@@ -91,12 +111,15 @@
 		C4DEEB8E208B4384006A1FAB /* MoviePicker */ = {
 			isa = PBXGroup;
 			children = (
+				C4D6BFB0208B68D100C11035 /* Extensions.swift */,
 				C4DEEB8F208B4384006A1FAB /* AppDelegate.swift */,
-				C4DEEB91208B4384006A1FAB /* MainViewController.swift */,
+				C4D6BFAD208B5BF000C11035 /* Controllers */,
 				C4D6BFA8208B55A000C11035 /* DataModel */,
 				C4DEEBA3208B4739006A1FAB /* DropViews */,
 				C4DEEB93208B4384006A1FAB /* Assets.xcassets */,
 				C4DEEB95208B4384006A1FAB /* Main.storyboard */,
+				C492AA22208C7C8D0064AAF5 /* CollectionItem.swift */,
+				C492AA23208C7C8D0064AAF5 /* CollectionItem.xib */,
 				C4DEEB98208B4384006A1FAB /* Info.plist */,
 				C4DEEB99208B4384006A1FAB /* MoviePicker.entitlements */,
 			);
@@ -106,7 +129,7 @@
 		C4DEEBA3208B4739006A1FAB /* DropViews */ = {
 			isa = PBXGroup;
 			children = (
-				C4DEEBA0208B43E0006A1FAB /* DropView.swift */,
+				C4178A41208B8B80003FB5C8 /* DropView.swift */,
 				C4DEEB9F208B43E0006A1FAB /* FolderDropView.swift */,
 			);
 			path = DropViews;
@@ -147,6 +170,7 @@
 				TargetAttributes = {
 					C4DEEB8B208B4384006A1FAB = {
 						CreatedOnToolsVersion = 9.1;
+						LastSwiftMigration = 0910;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -176,6 +200,7 @@
 			files = (
 				C4DEEB94208B4384006A1FAB /* Assets.xcassets in Resources */,
 				C4DEEB97208B4384006A1FAB /* Main.storyboard in Resources */,
+				C492AA25208C7C8D0064AAF5 /* CollectionItem.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -247,10 +272,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				C4DEEB92208B4384006A1FAB /* MainViewController.swift in Sources */,
-				C4DEEBA2208B43E0006A1FAB /* DropView.swift in Sources */,
+				C4178A42208B8B80003FB5C8 /* DropView.swift in Sources */,
+				C4D6BFAC208B5AB900C11035 /* File.swift in Sources */,
+				C4D6BFB1208B68D100C11035 /* Extensions.swift in Sources */,
+				C4D6BFAF208B5D4A00C11035 /* DataManager.swift in Sources */,
 				C4DEEB90208B4384006A1FAB /* AppDelegate.swift in Sources */,
 				C4DEEBA1208B43E0006A1FAB /* FolderDropView.swift in Sources */,
 				C4D6BFAA208B55C100C11035 /* Movie.swift in Sources */,
+				C492AA24208C7C8D0064AAF5 /* CollectionItem.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -379,6 +408,7 @@
 			baseConfigurationReference = 9675E6705D1065D3213B96E3 /* Pods-MoviePicker.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = MoviePicker/MoviePicker.entitlements;
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				CODE_SIGN_STYLE = Automatic;
@@ -389,6 +419,7 @@
 				PRODUCT_BUNDLE_IDENTIFIER = com.ihounokyaku.com.MoviePicker;
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE_SPECIFIER = "";
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
 				SWIFT_VERSION = 4.0;
 			};
 			name = Debug;
@@ -398,6 +429,7 @@
 			baseConfigurationReference = 5B7A34A037A0751BFCFC5BF1 /* Pods-MoviePicker.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CLANG_ENABLE_MODULES = YES;
 				CODE_SIGN_ENTITLEMENTS = MoviePicker/MoviePicker.entitlements;
 				CODE_SIGN_IDENTITY = "Mac Developer";
 				CODE_SIGN_STYLE = Automatic;

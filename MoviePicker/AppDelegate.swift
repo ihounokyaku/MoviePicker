@@ -19,6 +19,13 @@ class AppDelegate: NSObject, NSApplicationDelegate {
 
     func applicationDidFinishLaunching(_ aNotification: Notification) {
         // Insert code here to initialize your application
+        do {
+            let _ = try Realm()
+            print(Realm.Configuration.defaultConfiguration.fileURL)
+        } catch {
+            print("error initiating Realm \(error)")
+        }
+        
     }
 
     func applicationWillTerminate(_ aNotification: Notification) {

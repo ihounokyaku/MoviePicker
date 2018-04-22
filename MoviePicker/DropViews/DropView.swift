@@ -21,8 +21,9 @@ class DropView: NSView {
     }
     
     override func draggingEntered(_ sender: NSDraggingInfo) -> NSDragOperation {
+        print("dragging entered")
         if checkExtension(sender) == true {
-            self.layer?.backgroundColor = NSColor(hexString: "#C75E24", alpha:0.8)?.cgColor
+            self.layer?.backgroundColor = NSColor.blue.cgColor
             return .copy
         } else {
             return NSDragOperation()

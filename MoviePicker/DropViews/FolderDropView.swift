@@ -39,7 +39,6 @@ class FolderDropView: DropView {
     }
     
     override func performDragOperation(_ sender: NSDraggingInfo) -> Bool {
-        
         if let vc = delegate  {
             vc.folderDropped(url:self.getUrl(sender)!)
         }

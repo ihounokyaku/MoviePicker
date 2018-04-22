@@ -7,9 +7,14 @@
 //
 
 import Foundation
+import RealmSwift
 
-
-class Movie {
+class Movie: Object {
+    @objc dynamic var title: String = ""
+    @objc dynamic var urlPath: String = ""
+    @objc dynamic var imagePath: String = ""
+    @objc dynamic var lastUpdated: Double = 0
     
+    let tags = List<Tag>()
     
 }
