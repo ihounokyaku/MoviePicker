@@ -16,14 +16,18 @@ class DataManager : NSObject {
     
     var movies:Results<Movie>!
     var tags: Results<Tag>!
-    
+    var displayMovies:Results<Movie>!
+    var displayTags: Results<Tag>!
     
     //MARK: - INIT
     override init() {
         super.init()
         
         // - load movies and tags
-        self.reload()
+        self.movies = realm.objects(Movie.self)
+        self.displayMovies = movies
+        self.tags = realm.objects(Tag.self)
+        self.reloadTags()
     }
     
     //MARK: - METHODS
@@ -48,9 +52,9 @@ class DataManager : NSObject {
     }
     
     
-    func reload() {
-        self.movies = realm.objects(Movie.self)
-        self.tags = realm.objects(Tag.self)
+    func reloadTags() {
+        
+        self.displayTags = tags.filter("movies.@count > 1")
     }
     
     //MRK: - CREATE NEW

@@ -9,7 +9,8 @@
 import Cocoa
 
 class CollectionItem: NSCollectionViewItem {
-
+    @IBOutlet weak var coverImage: NSImageView!
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         // Do view setup here.

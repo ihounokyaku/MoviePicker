@@ -19,9 +19,14 @@ class MainViewController: NSViewController, FolderDropViewDelegate {
     @IBOutlet weak var dropView: FolderDropView!
     @IBOutlet weak var coverCollection: NSCollectionView!
     
+    @IBOutlet weak var statusLabel: NSTextField!
+    @IBOutlet weak var tagTable: NSTableView!
     
     //MARK: Managers, etc.
     var dataManager = DataManager()
+    
+    //MARK: Other Variables
+    var chosenMovie = 0
     
 
     //MARK: - ============== INITIATE VIEW =====================
@@ -36,7 +41,8 @@ class MainViewController: NSViewController, FolderDropViewDelegate {
         self.dropView.delegate = self
         self.coverCollection.delegate = self
         self.coverCollection.dataSource = self
-        
+        self.tagTable.delegate = self
+        self.tagTable.dataSource = self
         
         
         //-- Set View colors
@@ -57,21 +63,21 @@ class MainViewController: NSViewController, FolderDropViewDelegate {
     //MARK: - ===============Folder Dropped Methods===============
     func folderDropped(url: URL) {
         print("DRAGGED")
-        
-        
+
         //--Get subfolders
         let subFolders = self.getSubfolders(inFolder: url)
         var movies = [[String:Any]]()
         var moviesToDelete = [Movie]()
+        var moviesToCreate = [URL]()
+        
         
         for folder in subFolders {
-            
-            var tags = folder.tags().map({return $0.lowercased()})
-            
+            let tags = folder.tags().map({return $0.lowercased()})
             //-- Check if directory is a movie
             if tags.contains("movie") {
                 
                 //-- Check if it already exists & if so if it has been modified
+                
                 if let movie = self.dataManager.getMovie(withTitle: folder.lastPathComponent) {
                     if movie.lastUpdated >= folder.lastModified() {
                         continue
@@ -79,7 +85,16 @@ class MainViewController: NSViewController, FolderDropViewDelegate {
                         moviesToDelete.append(movie)
                     }
                 }
-                
+                moviesToCreate.append(folder)
+            }
+        }
+        
+        DispatchQueue.global(qos: .background).async {
+            for folder in moviesToCreate {
+                DispatchQueue.main.async {
+                    self.statusLabel.stringValue = "Reading File: \(folder.lastPathComponent)"
+                }
+                var tags = folder.tags().map({return $0.lowercased()})
                 //-- Create Movie Dictionary
                 tags.remove(at: tags.index(of: "movie")!)
                 
@@ -89,8 +104,15 @@ class MainViewController: NSViewController, FolderDropViewDelegate {
                 //-- Append Dictionary Item
                 movies.append(["title":folder.lastPathComponent, "tags":tags, "imagePath":imagePath, "urlPath":folder.path])
             }
+            DispatchQueue.main.async {
+                self.saveAndUpdateDataBase(from: movies, toDelete: moviesToDelete)
+                self.statusLabel.stringValue = url.path
+                self.coverCollection.reloadData()
+                self.dataManager.reloadTags()
+                self.tagTable.reloadData()
+            }
         }
-        self.saveAndUpdateDataBase(from: movies, toDelete: moviesToDelete)
+        
     }
     
     
@@ -142,13 +164,13 @@ class MainViewController: NSViewController, FolderDropViewDelegate {
         }
         
         //--
-        let url = imageFolder.appendingPathComponent(name)
+        let url = imageFolder.appendingPathComponent(name).appendingPathExtension("png")
         
         if !FileManager.default.fileExists(atPath: url.path) {
             image.writePNG(toURL: url)
         }
         
-        return url.path + ".png"
+        return url.path
     }
     
     //MARK: - Folder Management
@@ -164,49 +186,133 @@ class MainViewController: NSViewController, FolderDropViewDelegate {
     //MARK: - =====================Randomizer=======================
     
     @IBAction func testPressed(_ sender: Any) {
-        //TODO: make sure count > 1
-        self.animateScroller(objectIndex: self.randomNum(), duration: 0.2)
+        
+        if self.dataManager.displayMovies.count > 1 {
+            
+            //-- Chose movie
+            self.chosenMovie = Int(arc4random_uniform(UInt32(self.dataManager.displayMovies.count)))
+            print("chosen movie is \(self.chosenMovie)")
+            
+            // -- get current cell
+            let closestCell = self.coverCollection.visibleItems()[0]
+            let indexPath = self.coverCollection.indexPath(for: closestCell)
+            var currentItem = indexPath!.item
+            
+            if (self.chosenMovie - currentItem).magnitude > 7 {
+                currentItem = randomNum(excluding: self.chosenMovie)
+                let ip = NSIndexPath(forItem: currentItem, inSection: 0)
+                let set: Set<IndexPath> = [ip as IndexPath]
+                self.coverCollection.scrollToItems(at: set, scrollPosition: .centeredHorizontally)
+                print("scrolled to item")
+            }
+            
+            self.animateScroller(objectIndex: self.randomNum(excluding:currentItem), duration: 0.2, previousItem:currentItem)
+        }
     }
     
-    func animateScroller(objectIndex:Int, duration:TimeInterval) {
+    func animateScroller(objectIndex:Int, duration:TimeInterval, previousItem:Int) {
+        print("animating")
         let indexPath = NSIndexPath(forItem: objectIndex, inSection: 0)
         let set: Set<IndexPath> = [indexPath as IndexPath]
         NSAnimationContext.runAnimationGroup({ (_) in
+
             NSAnimationContext.current.duration = duration
             NSAnimationContext.current.allowsImplicitAnimation = true
             self.coverCollection.animator().scrollToItems(at: set, scrollPosition: .centeredHorizontally)
         }) {
             if duration < 2.0 {
-                self.animateScroller(objectIndex: self.randomNum(excluding:objectIndex), duration: duration * 1.2)
+                self.animateScroller(objectIndex: self.randomNum(excluding:objectIndex), duration: duration * 1.2, previousItem: objectIndex)
             } else {
-                print("completed!")
+                if objectIndex != self.chosenMovie {
+                    print("final aniation")
+                    self.animateScroller(objectIndex: self.chosenMovie, duration: duration * 1.2, previousItem: objectIndex)
+                }
             }
         }
     }
     
     
-    func randomNum(excluding numberToExclude:Int = 9999)-> Int {
-        let totalPossible = 10
-        var rando = arc4random_uniform(UInt32(totalPossible))
-        while rando == numberToExclude {
-            rando = arc4random_uniform(UInt32(totalPossible))
+    func randomNum(excluding numberToExclude:Int)-> Int {
+        
+        print("getting random number")
+        
+        
+        var rando = -1
+        
+        while rando < 0 || rando > self.dataManager.displayMovies.count - 1 || (rando - numberToExclude).magnitude > 18 || rando == numberToExclude {
+            print("rando = \(rando)")
+            if self.dataManager.displayMovies.count > 16 {
+                rando = Int(arc4random_uniform(UInt32(16))) + (self.chosenMovie - 7)
+            } else {
+                rando = Int(arc4random_uniform(UInt32(self.dataManager.displayMovies.count)))
+            }
         }
-        return Int(rando)
+        
+        //-- if space is too large, jump
+        
+//        let difference = Int(numberToExclude - Int(rando)).magnitude
+//        if difference > 10 {
+//            var index = Int(rando) + 10
+//
+//            while index >= self.dataManager.displayMovies.count {
+//                index -= 1
+//            }
+//
+//            let indexPath = NSIndexPath(forItem: index, inSection: 0)
+//            let set: Set<IndexPath> = [indexPath as IndexPath]
+//            print("skipping")
+//            self.coverCollection.animator().scrollToItems(at: set, scrollPosition: .centeredHorizontally)
+//        }
+        print("returnging \(rando)")
+        return rando
     }
 }
 
 extension MainViewController : NSCollectionViewDataSource, NSCollectionViewDelegate {
     
     func collectionView(_ collectionView: NSCollectionView, numberOfItemsInSection section: Int) -> Int {
-        return 10
+        self.filterDisplayMovies()
+        return self.dataManager.displayMovies.count
+    }
+    
+    func filterDisplayMovies() {
+        
+        let selectedIndexes = Array(self.tagTable.selectedRowIndexes) as [Int]
+        self.dataManager.displayMovies = self.dataManager.movies
+        if selectedIndexes.count > 0 {
+           
+            for ind in selectedIndexes {
+                self.dataManager.displayMovies = self.dataManager.displayMovies.filter("%@ IN tags", self.dataManager.displayTags[ind])
+            }
+        }
+        self.statusLabel.stringValue = "Showing \(self.dataManager.displayMovies.count) choices"
     }
     
     func collectionView(_ collectionView: NSCollectionView, itemForRepresentedObjectAt indexPath: IndexPath) -> NSCollectionViewItem {
-        let cell = collectionView.makeItem(withIdentifier: NSUserInterfaceItemIdentifier(rawValue:"CollectionItem")   , for: indexPath)
+        let cell = collectionView.makeItem(withIdentifier: NSUserInterfaceItemIdentifier(rawValue:"CollectionItem"), for: indexPath) as! CollectionItem
+        cell.coverImage.image = self.dataManager.displayMovies[indexPath.item].imagePath.asImage()
+        return cell
+    }
+}
+
+extension MainViewController : NSTableViewDelegate, NSTableViewDataSource {
+    
+    func numberOfRows(in tableView: NSTableView) -> Int {
+        return self.dataManager.displayTags.count
+    }
+    
+    func tableView(_ tableView: NSTableView, viewFor tableColumn: NSTableColumn?, row: Int) -> NSView? {
+        let cell = tableView.makeView(withIdentifier: tableColumn!.identifier, owner: self) as! NSTableCellView
+        
+        cell.textField?.stringValue = self.dataManager.displayTags[row].name
         
         return cell
     }
     
+    func tableViewSelectionDidChange(_ notification: Notification) {
+        
+        self.coverCollection.reloadData()
+    }
     
 }
 
