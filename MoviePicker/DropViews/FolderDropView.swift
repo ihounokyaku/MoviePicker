@@ -39,12 +39,16 @@ class FolderDropView: DropView {
     }
     
     override func performDragOperation(_ sender: NSDraggingInfo) -> Bool {
-        if let vc = delegate  {
-            vc.folderDropped(url:self.getUrl(sender)!)
+        if self.isEnabled == true {
+            if let vc = delegate  {
+                vc.folderDropped(url:self.getUrl(sender)!)
+            }
+            UserDefaults.standard.set(self.getUrl(sender)!.path, forKey: "folder")
+            return true
+        } else {
+            return false
         }
-        UserDefaults.standard.set(self.getUrl(sender)!.path, forKey: "folder")
-    
-        return true
+        
     }
     
     

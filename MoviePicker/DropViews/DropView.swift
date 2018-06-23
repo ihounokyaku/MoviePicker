@@ -6,6 +6,7 @@ class DropView: NSView {
     
     
     var filePath: String?
+    var isEnabled = true
     
     required init?(coder: NSCoder) {
         super.init(coder: coder)

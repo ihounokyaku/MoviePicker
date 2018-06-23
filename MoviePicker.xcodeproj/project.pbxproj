@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		C4178A42208B8B80003FB5C8 /* DropView.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4178A41208B8B80003FB5C8 /* DropView.swift */; };
+		C41CEC7620BBEBE300767F20 /* CustomRow.swift in Sources */ = {isa = PBXBuildFile; fileRef = C41CEC7520BBEBE300767F20 /* CustomRow.swift */; };
 		C492AA24208C7C8D0064AAF5 /* CollectionItem.swift in Sources */ = {isa = PBXBuildFile; fileRef = C492AA22208C7C8D0064AAF5 /* CollectionItem.swift */; };
 		C492AA25208C7C8D0064AAF5 /* CollectionItem.xib in Resources */ = {isa = PBXBuildFile; fileRef = C492AA23208C7C8D0064AAF5 /* CollectionItem.xib */; };
 		C4D6BFAA208B55C100C11035 /* Movie.swift in Sources */ = {isa = PBXBuildFile; fileRef = C4D6BFA9208B55C100C11035 /* Movie.swift */; };
@@ -27,6 +28,7 @@
 		9675E6705D1065D3213B96E3 /* Pods-MoviePicker.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-MoviePicker.debug.xcconfig"; path = "Pods/Target Support Files/Pods-MoviePicker/Pods-MoviePicker.debug.xcconfig"; sourceTree = "<group>"; };
 		C3E884548622516804E1970D /* Pods_MoviePicker.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_MoviePicker.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		C4178A41208B8B80003FB5C8 /* DropView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DropView.swift; sourceTree = "<group>"; };
+		C41CEC7520BBEBE300767F20 /* CustomRow.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CustomRow.swift; sourceTree = "<group>"; };
 		C492AA22208C7C8D0064AAF5 /* CollectionItem.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionItem.swift; sourceTree = "<group>"; };
 		C492AA23208C7C8D0064AAF5 /* CollectionItem.xib */ = {isa = PBXFileReference; lastKnownFileType = file.xib; path = CollectionItem.xib; sourceTree = "<group>"; };
 		C4D6BFA9208B55C100C11035 /* Movie.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Movie.swift; sourceTree = "<group>"; };
@@ -113,6 +115,7 @@
 			children = (
 				C4D6BFB0208B68D100C11035 /* Extensions.swift */,
 				C4DEEB8F208B4384006A1FAB /* AppDelegate.swift */,
+				C41CEC7520BBEBE300767F20 /* CustomRow.swift */,
 				C4D6BFAD208B5BF000C11035 /* Controllers */,
 				C4D6BFA8208B55A000C11035 /* DataModel */,
 				C4DEEBA3208B4739006A1FAB /* DropViews */,
@@ -276,6 +279,7 @@
 				C4D6BFAC208B5AB900C11035 /* Tag.swift in Sources */,
 				C4D6BFB1208B68D100C11035 /* Extensions.swift in Sources */,
 				C4D6BFAF208B5D4A00C11035 /* DataManager.swift in Sources */,
+				C41CEC7620BBEBE300767F20 /* CustomRow.swift in Sources */,
 				C4DEEB90208B4384006A1FAB /* AppDelegate.swift in Sources */,
 				C4DEEBA1208B43E0006A1FAB /* FolderDropView.swift in Sources */,
 				C4D6BFAA208B55C100C11035 /* Movie.swift in Sources */,

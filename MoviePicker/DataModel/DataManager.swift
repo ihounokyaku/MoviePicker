@@ -17,7 +17,8 @@ class DataManager : NSObject {
     var movies:Results<Movie>!
     var tags: Results<Tag>!
     var displayMovies:Results<Movie>!
-    var displayTags: Results<Tag>!
+    
+    var displayTags = [Tag]()
     
     //MARK: - INIT
     override init() {
@@ -54,7 +55,8 @@ class DataManager : NSObject {
     
     func reloadTags() {
         
-        self.displayTags = tags.filter("movies.@count > 1")
+        self.displayTags = Array(tags.filter("movies.@count > 2")).sorted(by: {$0.movies.count > $1.movies.count})
+        
     }
     
     //MRK: - CREATE NEW

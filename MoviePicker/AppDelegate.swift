@@ -21,7 +21,7 @@ class AppDelegate: NSObject, NSApplicationDelegate {
         // Insert code here to initialize your application
         do {
             let _ = try Realm()
-            print(Realm.Configuration.defaultConfiguration.fileURL)
+            //print(Realm.Configuration.defaultConfiguration.fileURL)
         } catch {
             print("error initiating Realm \(error)")
         }

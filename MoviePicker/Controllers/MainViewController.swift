@@ -13,19 +13,25 @@ import SYFlatButton
 import SwiftHEXColors
 class MainViewController: NSViewController, FolderDropViewDelegate {
     
-    //MARK: - ============== DECLARED VARIABLES =====================
+    //MARK: - ============== IBOUTLETS =====================
     
-    //MARK: IBOutlets
+    //MARK: - ==IBOutlets==
     @IBOutlet weak var dropView: FolderDropView!
     @IBOutlet weak var coverCollection: NSCollectionView!
+    @IBOutlet weak var shuffleButton: SYFlatButton!
     
     @IBOutlet weak var statusLabel: NSTextField!
     @IBOutlet weak var tagTable: NSTableView!
+    @IBOutlet weak var excludeTagTable: NSTableView!
     
-    //MARK: Managers, etc.
+    //MARK: - ==Buttons==
+    @IBOutlet weak var andOrControl: NSSegmentedControl!
+    
+    //MARK: - ============== DECLARED VARIABLES =====================
+    //MARK: - Managers, etc.
     var dataManager = DataManager()
     
-    //MARK: Other Variables
+    //MARK: - Other Variables
     var chosenMovie = 0
     
 
@@ -43,7 +49,9 @@ class MainViewController: NSViewController, FolderDropViewDelegate {
         self.coverCollection.dataSource = self
         self.tagTable.delegate = self
         self.tagTable.dataSource = self
-        
+        self.excludeTagTable.delegate = self
+        self.excludeTagTable.dataSource = self
+       
         
         //-- Set View colors
         view.wantsLayer = true
@@ -72,14 +80,15 @@ class MainViewController: NSViewController, FolderDropViewDelegate {
         
         
         for folder in subFolders {
-            let tags = folder.tags().map({return $0.lowercased()})
+            var tags = folder.tags().map({return $0.lowercased()})
             //-- Check if directory is a movie
             if tags.contains("movie") {
-                
+                tags.remove(at: tags.index(of: "movie")!)
                 //-- Check if it already exists & if so if it has been modified
                 
                 if let movie = self.dataManager.getMovie(withTitle: folder.lastPathComponent) {
-                    if movie.lastUpdated >= folder.lastModified() {
+                    let fileTags = Array(movie.tags).map({return $0.name})
+                    if movie.lastUpdated >= folder.lastModified() && tags.containsSameElements(as: fileTags) {
                         continue
                     } else {
                         moviesToDelete.append(movie)
@@ -112,10 +121,9 @@ class MainViewController: NSViewController, FolderDropViewDelegate {
                 self.tagTable.reloadData()
             }
         }
-        
     }
     
-    
+
     
     func saveAndUpdateDataBase(from dictionaries:[[String:Any]], toDelete:[Movie]) {
         for movie in toDelete {
@@ -188,10 +196,9 @@ class MainViewController: NSViewController, FolderDropViewDelegate {
     @IBAction func testPressed(_ sender: Any) {
         
         if self.dataManager.displayMovies.count > 1 {
-            
+            self.enableDisableAll(enable: false)
             //-- Chose movie
             self.chosenMovie = Int(arc4random_uniform(UInt32(self.dataManager.displayMovies.count)))
-            print("chosen movie is \(self.chosenMovie)")
             
             // -- get current cell
             let closestCell = self.coverCollection.visibleItems()[0]
@@ -226,6 +233,8 @@ class MainViewController: NSViewController, FolderDropViewDelegate {
                 if objectIndex != self.chosenMovie {
                     print("final aniation")
                     self.animateScroller(objectIndex: self.chosenMovie, duration: duration * 1.2, previousItem: objectIndex)
+                } else {
+                    self.enableDisableAll(enable: true)
                 }
             }
         }
@@ -248,26 +257,22 @@ class MainViewController: NSViewController, FolderDropViewDelegate {
             }
         }
         
-        //-- if space is too large, jump
-        
-//        let difference = Int(numberToExclude - Int(rando)).magnitude
-//        if difference > 10 {
-//            var index = Int(rando) + 10
-//
-//            while index >= self.dataManager.displayMovies.count {
-//                index -= 1
-//            }
-//
-//            let indexPath = NSIndexPath(forItem: index, inSection: 0)
-//            let set: Set<IndexPath> = [indexPath as IndexPath]
-//            print("skipping")
-//            self.coverCollection.animator().scrollToItems(at: set, scrollPosition: .centeredHorizontally)
-//        }
         print("returnging \(rando)")
         return rando
     }
+    
+    //MARK: - ========== UI UPDATERS =============
+    
+    func enableDisableAll(enable enableState:Bool)  {
+        self.tagTable.isEnabled = enableState
+        self.excludeTagTable.isEnabled = enableState
+        self.dropView.isEnabled = enableState
+        self.shuffleButton.isEnabled = enableState
+    }
+    
 }
 
+//MARK: - ========== COLLECTIONVIEWS =============
 extension MainViewController : NSCollectionViewDataSource, NSCollectionViewDelegate {
     
     func collectionView(_ collectionView: NSCollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -276,25 +281,69 @@ extension MainViewController : NSCollectionViewDataSource, NSCollectionViewDeleg
     }
     
     func filterDisplayMovies() {
-        
-        let selectedIndexes = Array(self.tagTable.selectedRowIndexes) as [Int]
         self.dataManager.displayMovies = self.dataManager.movies
-        if selectedIndexes.count > 0 {
-           
-            for ind in selectedIndexes {
-                self.dataManager.displayMovies = self.dataManager.displayMovies.filter("%@ IN tags", self.dataManager.displayTags[ind])
+        let andTagsToInclude = self.getSelectedTags(inTable: self.tagTable, type:.and)
+        let orTagsToInclude = self.getSelectedTags(inTable: self.tagTable, type: .or)
+        let tagsToExclude = self.getSelectedTags(inTable: self.excludeTagTable)
+        
+        if andTagsToInclude.count != 0 || orTagsToInclude.count != 0 || tagsToExclude.count != 0 {
+            
+            if andTagsToInclude.count > 0 {
+                self.dataManager.displayMovies = self.dataManager.displayMovies.filter(self.compoundTagPredicate(and: true, tags: andTagsToInclude))
+            }
+            if orTagsToInclude.count > 0 {
+                self.dataManager.displayMovies = self.dataManager.displayMovies.filter(self.compoundTagPredicate(and: false, tags: orTagsToInclude))
+            }
+            for tag in tagsToExclude  {
+                self.dataManager.displayMovies = self.dataManager.displayMovies.filter("NOT (%@ IN tags)", tag)
             }
         }
+        
         self.statusLabel.stringValue = "Showing \(self.dataManager.displayMovies.count) choices"
     }
+    
+    func compoundTagPredicate(and:Bool, tags:[Tag])-> NSCompoundPredicate {
+        var predicates = [NSPredicate]()
+        
+        for tag in tags {
+            predicates.append(NSPredicate(format: "%@ IN tags", tag))
+        }
+        if and {
+            return NSCompoundPredicate(andPredicateWithSubpredicates: predicates)
+        }
+        return NSCompoundPredicate(orPredicateWithSubpredicates: predicates)
+    }
+    
+    func getSelectedTags(inTable table:NSTableView, type:TagSelectionType = .none)-> [Tag] {
+        var tags = [Tag]()
+        let selectedIndexes = Array(table.selectedRowIndexes) as [Int]
+        if selectedIndexes.count > 0 {
+            for ind in selectedIndexes {
+                if type == .none || type == (tagTable.rowView(atRow: ind, makeIfNecessary: true) as! CustomRow).type{
+                    tags.append(self.dataManager.displayTags[ind])
+                }
+            }
+        }
+        return tags
+    }
+    
+    
     
     func collectionView(_ collectionView: NSCollectionView, itemForRepresentedObjectAt indexPath: IndexPath) -> NSCollectionViewItem {
         let cell = collectionView.makeItem(withIdentifier: NSUserInterfaceItemIdentifier(rawValue:"CollectionItem"), for: indexPath) as! CollectionItem
         cell.coverImage.image = self.dataManager.displayMovies[indexPath.item].imagePath.asImage()
         return cell
     }
+    
+    func collectionView(_ collectionView: NSCollectionView, didSelectItemsAt indexPaths: Set<IndexPath>) {
+        print("selected \(indexPaths)")
+    }
+    
+    
 }
 
+
+//MARK: - ========== TABLEVIEWS =============
 extension MainViewController : NSTableViewDelegate, NSTableViewDataSource {
     
     func numberOfRows(in tableView: NSTableView) -> Int {
@@ -305,15 +354,42 @@ extension MainViewController : NSTableViewDelegate, NSTableViewDataSource {
         let cell = tableView.makeView(withIdentifier: tableColumn!.identifier, owner: self) as! NSTableCellView
         
         cell.textField?.stringValue = self.dataManager.displayTags[row].name
-        
+        cell.wantsLayer = true
         return cell
     }
     
     func tableViewSelectionDidChange(_ notification: Notification) {
         
+        if (notification.object as? NSTableView) == self.tagTable {
+            self.excludeTagTable.deselectRow(self.tagTable.selectedRow)
+            
+        } else if (notification.object as? NSTableView) == self.excludeTagTable {
+            self.tagTable.deselectRow(self.excludeTagTable.selectedRow)
+        }
+        
+        
         self.coverCollection.reloadData()
     }
     
+    func tableView(_ tableView: NSTableView, rowViewForRow row: Int) -> NSTableRowView? {
+        return CustomRow()
+    }
+    
+
+    
+    func tableView(_ tableView: NSTableView, shouldSelectRow row: Int) -> Bool {
+        if tableView == self.tagTable {
+            if self.andOrControl.selectedSegment == 1 {
+                (tagTable.rowView(atRow: self.tagTable.clickedRow, makeIfNecessary: false) as! CustomRow).type = .or
+            } else {
+                (tagTable.rowView(atRow: self.tagTable.clickedRow, makeIfNecessary: false) as! CustomRow).type = .and
+            }
+        }
+         return true
+    }
+    
+    
+
 }
 
 
